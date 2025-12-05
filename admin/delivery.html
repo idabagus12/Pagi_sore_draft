@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Delivery Management</title><link rel="stylesheet" href="../css/style.css"></head>
+<body>
+  <header class="site-header"><h1>Admin - Delivery</h1><nav><a href="dashboard.html">Dashboard</a> <a href="orders.html">Orders</a> <a href="payments.html">Payments</a></nav></header>
+  <main class="container">
+    <h2>Delivery Schedule</h2>
+    <div id="delivery-list"></div>
+  </main>
+  <script src="../js/api_ooad.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const box = document.getElementById('delivery-list');
+      PSApi.getDeliveryList().then(list => {
+        if (!list || !list.length) { box.textContent = 'No scheduled deliveries'; return; }
+        list.forEach(d => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h4>Delivery ${d.delivery_id}</h4>
+            <div>Order: ${d.order_id}</div>
+            <div>Driver: ${d.driver || 'Unassigned'}</div>
+            <div>Time: ${d.deliver_time || 'N/A'}</div>
+            <div>Address: ${d.address || 'N/A'}</div>
+            <div>Status: <strong>${d.status}</strong></div>
+          `;
+          box.appendChild(card);
+        });
+      }).catch(err => {
+        box.textContent = 'Error: ' + (err.message || err);
+      });
+    });
+  </script>
+  <script src="../js/app.js"></script>
+</body>
+</html>
