@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Test Admin Login</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto; }
+    .test-box { border: 1px solid #ccc; padding: 1rem; margin: 1rem 0; }
+    button { padding: 0.5rem 1rem; margin: 0.5rem; cursor: pointer; }
+    .log { background: #f5f5f5; padding: 1rem; margin: 1rem 0; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow: auto; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Test Admin Login</h1>
+    <!-- File deprecated. No longer used. -->
+      } catch(e) {
+        log(id, `Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testPHPBackend() {
+      const id = 'php-log';
+      document.getElementById(id).textContent = '';
+      log(id, 'Testing PHP backend...');
+      
+      const baseURL = window.location.origin + '/pagi_sore_frontend/backend/php';
+      const payload = {username: 'admin', password: 'admin'};
+      
+      log(id, `Sending request to: ${baseURL}/admin_login.php`);
+      log(id, `Payload: ${JSON.stringify(payload)}`);
+      
+      fetch(baseURL + '/admin_login.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload),
+        credentials: 'include'
+      })
+      .then(res => {
+        log(id, `Response status: ${res.status} ${res.statusText}`);
+        return res.text().then(text => ({text, status: res.status}));
+      })
+      .then(({text, status}) => {
+        try {
+          const data = JSON.parse(text);
+          if(status === 200 || (data && data.ok)) {
+            log(id, `Success: ${JSON.stringify(data)}`, 'success');
+          } else {
+            log(id, `Error: ${JSON.stringify(data)}`, 'error');
+          }
+        } catch(e) {
+          log(id, `Raw response: ${text}`, status === 200 ? 'success' : 'error');
+        }
+      })
+      .catch(err => log(id, `Fetch error: ${err.message}`, 'error'));
+    }
+
+    function testFullAPI() {
+      const id = 'api-log';
+      document.getElementById(id).textContent = '';
+      log(id, 'Testing Full Admin Login via PSApi...');
+      
+      PSApi.adminLogin({username: 'admin', password: 'admin'})
+        .then(res => {
+          log(id, `Admin login success: ${JSON.stringify(res)}`, 'success');
+          log(id, 'PSAdmin flag should now be set in localStorage', 'success');
+        })
+        .catch(err => {
+          log(id, `Admin login failed: ${err.message || JSON.stringify(err)}`, 'error');
+        });
+    }
+
+    function checkSession() {
+      const id = 'session-log';
+      document.getElementById(id).textContent = '';
+      
+      const psAdmin = localStorage.getItem('PSAdmin');
+      const psCustomer = localStorage.getItem('PSCurrentCustomer');
+      const psStorage = localStorage.getItem('PSStorage');
+      
+      log(id, `PSAdmin flag: ${psAdmin || '(not set)'}`);
+      log(id, `PSCurrentCustomer: ${psCustomer ? '(set)' : '(not set)'}`);
+      log(id, `PSStorage: ${psStorage ? '(set, ' + JSON.parse(psStorage || '{}').admin?.length + ' admins)' : '(not set)'}`);
+      
+      try {
+        const cur = PSApi.getCurrentCustomer && PSApi.getCurrentCustomer();
+        if(cur) {
+          log(id, `Current customer: ${JSON.stringify(cur)}`, 'success');
+        } else {
+          log(id, 'No customer logged in');
+        }
+      } catch(e) {
+        log(id, `Error checking customer: ${e.message}`, 'error');
+      }
+    }
+
+    // Auto-test on load
+    window.addEventListener('load', () => {
+      log('demo-log', 'Page loaded. Run tests above.', 'success');
+    });
+  </script>
+</body>
+</html>
