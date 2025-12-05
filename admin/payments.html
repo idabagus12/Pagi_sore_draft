@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payments Validation</title><link rel="stylesheet" href="../css/style.css"></head>
+<body>
+  <header class="site-header"><h1>Admin - Payments</h1><nav><a href="dashboard.html">Dashboard</a> <a href="orders.html">Orders</a> <a href="menu_manage.html">Menus</a></nav></header>
+  <main class="container">
+    <h2>Pending Payments</h2>
+    <div id="payments-list"></div>
+  </main>
+  <script src="../js/api_ooad.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const list = document.getElementById('payments-list');
+      PSApi.getPendingPayments().then(arr=>{
+        if(!arr || !arr.length) { list.textContent='No pending payments'; return; }
+        arr.forEach(p=>{
+          const c=document.createElement('div'); c.className='card';
+          const date = p.timestamp ? p.timestamp.split('T')[0] : 'N/A';
+          c.innerHTML=`<h4>Payment ${p.payment_id}</h4><div>Order: ${p.order_id}</div><div>Date: ${date}</div><div>Status: ${p.status}</div><div style="margin-top:.5rem"><button class="btn approve" data-payment="${p.payment_id}" data-order="${p.order_id}">Approve</button> <button class="btn btn-outline reject" data-payment="${p.payment_id}" data-order="${p.order_id}">Reject</button></div>`;
+          list.appendChild(c);
+        });
+        list.addEventListener('click', e=>{
+          const payment_id = e.target.dataset.payment;
+          const order_id = e.target.dataset.order;
+          if(!payment_id || !order_id) return;
+          if(e.target.classList.contains('approve')){
+            PSApi.validatePayment({payment_id:parseInt(payment_id), order_id, verified_by:'admin', status:'Approved'}).then(()=>{ alert('Payment approved'); window.location.reload(); }).catch(err=>alert(err.message||err));
+          } else if(e.target.classList.contains('reject')){
+            PSApi.validatePayment({payment_id:parseInt(payment_id), order_id, verified_by:'admin', status:'Rejected'}).then(()=>{ alert('Payment rejected'); window.location.reload(); }).catch(err=>alert(err.message||err));
+          }
+        });
+      }).catch(err=>{ list.textContent='Error: '+(err.message||err); });
+    });
+  </script>
+</body>
+</html>
+
