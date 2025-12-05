@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Order</title><link rel="stylesheet" href="../css/style.css"></head>
+<body>
+  <header class="site-header"><h1>Pagi Sore</h1><nav><a href="menu.html">Menu</a> <a href="dashboard.html">Dashboard</a></nav></header>
+  <main class="container">
+    <h2>Order</h2>
+    <div id="order-menu-title" class="small">Loading menu...</div>
+    <form id="order-form">
+      <input type="hidden" name="menuId" value="">
+      <div class="form-group"><label>Customer ID (auto-filled)</label><input name="customerId" type="number" value="0" readonly></div>
+      <div class="form-group"><label>Portion amount</label><input name="portion" type="number" min="1" value="1"></div>
+      <div class="form-group"><label>Notes</label><textarea name="note"></textarea></div>
+      <div class="form-group"><label>Delivery date</label><input name="deliveryDate" type="date" required></div>
+      <div style="margin-top:.5rem"><button class="btn" type="submit">Submit Order</button></div>
+    </form>
+  </main>
+  <script src="../js/api_ooad.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Upload Payment</title><link rel="stylesheet" href="../css/style.css"></head>
+<body>
+  <header class="site-header"><h1>Pagi Sore</h1><nav><a href="dashboard.html">Dashboard</a> <a href="menu.html">Menu</a></nav></header>
+  <main class="container">
+    <h2>Upload Bukti Pembayaran</h2>
+    <div>Order ID: <span id="upload-order-id"></span></div>
+    <form id="upload-form">
+      <div class="form-group"><label>Pilih file</label><input id="proof" type="file" accept="image/*,.pdf" required></div>
+      <div><button class="btn" type="submit">Upload</button></div>
+    </form>
+  </main>
+  <script src="../js/api_ooad.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>
